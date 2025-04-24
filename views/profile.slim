@@ -1,0 +1,19 @@
+p #{info}
+p #{recipes}
+div[id="profile_header"]
+  img src="img/profile/#{info["profile_pic"]}"
+  p likes: #{info["likes"]}
+  - if recipes == nil 
+    p recipes: 0
+  - else
+    p recipes: #{recipes.length}
+h1 #{info["UserName"]}
+p #{info["bio"]}
+
+div[class="recipe_grid"]
+    - if recipes
+        recipes.each_do 
+        article[class="recipe"]
+
+a href="/edit" edit profile 
+a href="/recipes/new" new recipe

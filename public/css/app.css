@@ -1,0 +1,43 @@
+nav{
+    display: flex;
+    background-color: bisque;
+    align-items: center;
+    font-size: 40px;
+    border-radius: 10px;
+}
+nav p{
+    margin: 10px;
+}
+nav span{
+    font-size: 70px;
+    margin-bottom: 15px;
+    margin-left: 10px;
+}
+nav a{
+    margin-left: 72%;
+    font-size: 50px;
+}
+#homenav{
+    display: flex;
+    justify-content: space-between;
+    border: 1cap;
+    border-style: double;
+    border-color: black;
+}
+#homenav a{
+    font-size: 25px;
+    display: block;
+    padding: 10px;
+    background-color:chartreuse;
+    margin: 5px;
+    margin-right: 45px;
+    border-top-left-radius: 23px;
+    border-bottom-right-radius: 23px;
+    text-decoration: none;
+    color: black;
+}
+#profile_header img{
+  height: 200px;  
+  width: 200px;
+  border-radius: 50%;
+}
