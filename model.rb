@@ -53,12 +53,17 @@ def like(recipeId)
     likes = db.execute("SELECT likes FROM users WHERE UserId=?", user_id)+1
     db.execute("UPDATE users SET likes=? WHERE UserId=?", likes, user_id)
 end
-def search(filter)
+def search(filter, sort)
     db = SQLite3::Database.new("db/mat.db")
     db.results_as_hash = true
     if filter
-        db.execute("SELECT * FROM recept WHERE #{filter}")
+        db.execute("SELECT * FROM recept WHERE #{filter} ORDER BY #{sort}")
     else
-        db.execute("SELECT * FROM recept")
+        db.execute("SELECT * FROM recept ORDER BY #{sort}")
     end
+end
+def recipe_info(id)
+    db = SQLite3::Database.new("db/mat.db")
+    db.results_as_hash = true
+    db.execute("SELECT * FROM recept WHERE receptId=?", id)
 end

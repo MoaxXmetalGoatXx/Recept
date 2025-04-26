@@ -110,21 +110,44 @@ post('/recipes/new') do
     new_recipe(title, description, ingredients, instructions, timestamp, session[:UserId])
     redirect('/profile')
 end
-get('recipes/search') do
+get('/recipes') do
     if params["sort"]
         sort = params["sort"]
+    else 
+        sort = "receptId"
     end
-    filter=nil
-    @recipes = get_recipes(filter, sort)
-    if params[:q]
+    vegetarian = params["vegetarian"]
+    vegan = params["vegan"]
+    gluten_free = params["gluten_free"]
+    filter = nil
+    if vegetarian 
+        filter = "vegetarian='true'"
+    end
+    if filter && vegan
+        filter = filter + "AND vegan='true'"
+    elsif vegan
+        filter = "vegan='true'"
+    end
+    if filter && gluten_free
+        filter = filter + "AND gluten_free='true'"
+    elsif gluten_free
+        filter = "gluten_free='true'"
+    end
+    @recipes = search(filter, sort)
+    if params[:q] != ""
         recipes = []
         q = params[:q].downcase
         @recipes.each do|recipe|
             if recipe["Title"].downcase[q]
-                recipes<<[recipe]
+                recipes<<recipe
             end
         end
         @recipes = recipes
     end
     slim(:"recipes/search")
+end
+get ('/recipe:id') do
+    id = params[:id]
+    recipe = recipe_info(id)
+    slim(:"recipes/recipe" , locals:{recipe:recipe})
 end

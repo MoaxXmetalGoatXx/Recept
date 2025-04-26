@@ -1,5 +1,3 @@
-p #{info}
-p #{recipes}
 div[id="profile_header"]
   img src="img/profile/#{info["profile_pic"]}"
   p likes: #{info["likes"]}
@@ -12,8 +10,11 @@ p #{info["bio"]}
 
 div[class="recipe_grid"]
     - if recipes
-        recipes.each_do 
-        article[class="recipe"]
+        - recipes.each do|recipe|
+          article[class="recipe"] href="/recipe:#{recipe['recipeId']}"
+            h3 #{recipe["Title"]}
+            p #{recipe["description"]}
+            p #{recipe["likes"]}
 
 a href="/edit" edit profile 
 a href="/recipes/new" new recipe
