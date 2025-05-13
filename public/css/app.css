@@ -9,13 +9,19 @@ nav p{
     margin: 10px;
 }
 nav span{
-    font-size: 70px;
+    font-size: 75px;
     margin-bottom: 15px;
     margin-left: 10px;
+    margin-right: 5px;
+}
+nav div{
+    margin-left: 48%;
+    font-size: 50px;
 }
 nav a{
-    margin-left: 72%;
     font-size: 50px;
+    justify-self: flex-start;
+    margin-left: 5px;
 }
 #homenav{
     display: flex;
@@ -30,7 +36,8 @@ nav a{
     padding: 10px;
     background-color:chartreuse;
     margin: 5px;
-    margin-right: 45px;
+    margin-left: 7%;
+    margin-right: 10%;
     border-top-left-radius: 23px;
     border-bottom-right-radius: 23px;
     text-decoration: none;
@@ -40,4 +47,22 @@ nav a{
   height: 200px;  
   width: 200px;
   border-radius: 50%;
+  margin: 20px;
+  border: 1cap;
+  border-color: black;
+  border-style: dashed;
+}
+article{
+    width:100%;
+    border-style: solid;
+    border-color: black;
+}
+article p{
+    margin-left: 5px;
+}
+article h3{
+    margin-left: 5px;
+}
+#review_text{
+    color:brown;
 }

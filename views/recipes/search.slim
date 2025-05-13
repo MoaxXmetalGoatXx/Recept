@@ -1,15 +1,13 @@
 form action="/recipes" method="get"
     label for="search" Search for recipe 
     input type="search" id="search" name="q"
-    label for="vegetarian"  vegetarian
+    label for="egetarian"  vegetarian
     input type="checkbox" id="vegetarian" name="vegetarian" value=true
     label for="vegan" vegan
     input type="checkbox" id="vegan" name="vegan" value=true
     label for="gluten_free" gluten free
     input type="checkbox" id="gluten_free" name="gluten_free" value=true
     p Sort by 
-    input type="radio" id="likes" name="sort" value="likes DESC"
-    label for="likes" Likes
     input type="radio" id="new" name="sort" value="receptId DESC"
     label for="new" New to old
     input type="radio" id="old" name="sort" value="receptId"
@@ -18,5 +16,8 @@ form action="/recipes" method="get"
     label for="A_Z" A_Ö
     input type="submit" value="search"
 -  if @recipes
-    -@recipes.each do|recipe|
-        p #{recipe["Title"]}
+    ul
+        -@recipes.each do|recipe|
+            li 
+                a href="/recipes/#{recipe['receptId']}" #{recipe["Title"]}
+                

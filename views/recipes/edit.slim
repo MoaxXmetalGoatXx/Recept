@@ -1,1 +1,7 @@
-form action="recipes/#{id}edit" method="post" 
+
+form action="/recipes/#{recipe['receptId']}/edit" method="post" 
+    input type="text" name="Title" value="#{recipe['Title']}"
+    input type="text" name="description" value="#{recipe['description']}"
+    input type="text" name="ingredients" value="#{recipe['ingredients']}"
+    input type="text" name="instructions" value="#{recipe['instructions']}"
+    input type="submit" value="submit"

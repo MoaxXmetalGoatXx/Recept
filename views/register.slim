@@ -4,5 +4,8 @@ form action="/register" method="post"
     input type="text" name="pwd_confirm" placeholder="confirm password"
     input type="submit" value="register"
 
+- if flash[:password]
+    p.password = flash[:password]
+
 p Already a user?
 a href="/login" login

@@ -1,6 +1,5 @@
 div[id="profile_header"]
-  img src="img/profile/#{info["profile_pic"]}"
-  p likes: #{info["likes"]}
+  img src="../img/profile/#{info["profile_pic"]}"
   - if recipes == nil 
     p recipes: 0
   - else
@@ -8,13 +7,19 @@ div[id="profile_header"]
 h1 #{info["UserName"]}
 p #{info["bio"]}
 
-div[class="recipe_grid"]
-    - if recipes
-        - recipes.each do|recipe|
-          article[class="recipe"] href="/recipe:#{recipe['recipeId']}"
-            h3 #{recipe["Title"]}
-            p #{recipe["description"]}
-            p #{recipe["likes"]}
+-  if recipes
+    ul
+      - recipes.each do|recipe|
+            li 
+              a href="/recipes/#{recipe['receptId']}" #{recipe["Title"]}
+              - if user 
+                  p /
+                  a href="/recipes/#{recipe['receptId']}/edit"  edit
+                  form action="/recipes/#{recipe['receptId']}/delete" method="post"
+                    input type="submit" value="delete"
+              
 
-a href="/edit" edit profile 
-a href="/recipes/new" new recipe
+- if user 
+  a href="/recipes/new" new recipe
+  p /
+  a href="/edit" edit profile

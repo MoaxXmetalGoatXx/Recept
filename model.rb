@@ -1,11 +1,14 @@
-def register_user(user, pwd)
+def database()
     db = SQLite3::Database.new("db/mat.db")
+end
+def register_user(user, pwd)
+    db = database
     pwd_digest=BCrypt::Password.create(pwd)
     db.execute("INSERT INTO users(UserName,
-    pw, likes) VALUES(?,?, 0)",[user,pwd_digest])
+    pw) VALUES(?,?)",[user,pwd_digest])
 end
 def user_exist(user)
-    db = SQLite3::Database.new("db/mat.db")
+    db = database
     result = db.execute("SELECT UserId FROM users WHERE
     UserName=?",user)
     if result.empty?
@@ -14,12 +17,12 @@ def user_exist(user)
         return result
     end
 end
+
 def login(user, pwd)
-    db = SQLite3::Database.new("db/mat.db")
+    db = database()
     db.results_as_hash = true
     result=db.execute("SELECT UserId, pw FROM
     users WHERE UserName=?",user)
-    p result[0] 
     if BCrypt::Password.new(result[0]["pw"]) == pwd
         return result[0]["UserId"]
     else
@@ -27,43 +30,90 @@ def login(user, pwd)
     end
 end
 def user_info(id)
-    db = SQLite3::Database.new("db/mat.db")
+    db = database
     db.results_as_hash = true
     info = db.execute("SELECT * FROM
-    users WHERE UserId=?", id)
+    users WHERE UserId=?", id).first
     recipes = db.execute("SELECT * FROM recept WHERE UserId=?", id)
     return info, recipes
 end
 def update_profile(id, file_name, bio)
-    db = SQLite3::Database.new("db/mat.db")
+    db = database
     db.execute("UPDATE users SET bio=? WHERE UserId=?", [bio, id])
     if file_name != nil 
         db.execute("UPDATE users SET profile_pic=? WHERE UserId=?", [file_name, id])
     end
 end
 def new_recipe(title, description, ingredients, instructions, time, id, vegan, vegetarian, gluten_free)
-    db = SQLite3::Database.new("db/mat.db")
-    db.execute("INSERT INTO recept(description, Title, instructions, UserId, timeStamp, ingredients, vegan, vegetarian, gluten_free, likes) VALUES(?,?,?,?,?,?,?,?,?,0)",[description, title, instructions, id, time, ingredients, vegan, vegetarian, gluten_free])
+    db = database
+    db.execute("INSERT INTO recept(description, Title, instructions, UserId, timeStamp, ingredients, vegan, vegetarian, gluten_free) VALUES(?,?,?,?,?,?,?,?,?)",[description, title, instructions, id, time, ingredients, vegan, vegetarian, gluten_free])
 end
-def like(recipeId)
-    db = SQLite3::Database.new("db/mat.db")
-    likes = db.execute("SELECT likes FROM recept WHERE receptId=?", recipeId)+1
-    db.execute("UPDATE recept SET likes=? WHERE receptId=?", likes)
-    user_id = db.execute("SELECT UserId FROM recept WHERE receptId=?",recipeId)+1
-    likes = db.execute("SELECT likes FROM users WHERE UserId=?", user_id)+1
-    db.execute("UPDATE users SET likes=? WHERE UserId=?", likes, user_id)
+def review(rating,review,recipeId, id)
+    db = database
+    db.execute("INSERT INTO reviews(rating, review, UserId, receptId) VALUES(?,?,?,?)",[rating,review,id,recipeId])
+end
+def recipe_reviews(id)
+    db = database
+    db.results_as_hash = true
+    reviews = db.execute("SELECT * FROM reviews WHERE receptId=?", id)
+    if reviews.empty?
+        return nil
+    else 
+        db.results_as_hash = false
+        reviews.each do|review|
+            user = db.execute("SELECT UserName FROM users WHERE UserId=?", review["UserId"]).first[0]
+            review["user"] = user
+        end
+        return reviews
+    end
+end
+def reviewsid(id)
+    db = database
+    ids = db.execute("SELECT UserId FROM reviews WHERE receptId=?", id).flatten
+    p "ids"
+    p ids
+    return ids
 end
 def search(filter, sort)
-    db = SQLite3::Database.new("db/mat.db")
+    db = database
     db.results_as_hash = true
     if filter
-        db.execute("SELECT * FROM recept WHERE #{filter} ORDER BY #{sort}")
+        return db.execute("SELECT * FROM recept WHERE #{filter} ORDER BY #{sort}")
     else
-        db.execute("SELECT * FROM recept ORDER BY #{sort}")
+        return db.execute("SELECT * FROM recept ORDER BY #{sort}")
     end
 end
 def recipe_info(id)
-    db = SQLite3::Database.new("db/mat.db")
+    db = database
+    userid = db.execute("SELECT UserId FROM recept WHERE receptId=?", id).first
+    if userid == nil
+        return nil
+    end
+    p "userid"
+    p userid[0]
+    username = db.execute("SELECT UserName FROM users WHERE UserId=?", userid[0]).first[0]
+    p username
     db.results_as_hash = true
-    db.execute("SELECT * FROM recept WHERE receptId=?", id)
+    info = db.execute("SELECT * FROM recept WHERE receptId=?", id).first
+    return info, username
+end
+def edit_recipe(id, title, description, ingredients, instructions)
+    db = database
+    db.execute("UPDATE recept SET Title=? WHERE receptId=?", [title, id])
+    db.execute("UPDATE recept SET description=? WHERE receptId=?", [description, id])
+    db.execute("UPDATE recept SET ingredients=? WHERE receptId=?", [ingredients, id])
+    db.execute("UPDATE recept SET instructions=? WHERE receptId=?", [instructions, id])
+
+end 
+def user_recipe?(id, userId)
+    db = database
+    if userId == db.execute("SELECT UserId FROM recept WHERE receptId=?", id).first
+        return true
+    else 
+        return false
+    end
+end
+def delete_recipe(id)
+    db = database
+    db.execute("DELETE FROM recept WHERE receptId=?", id).first
 end
